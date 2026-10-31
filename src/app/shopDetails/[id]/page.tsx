@@ -33,7 +33,7 @@ const products = [
 const sizes = ['S', 'M', 'L', 'XL'];
 
 function ShopDetails() {
-    const params = useParams();
+    const params = useParams<{ id: string }>();
     const [selectedSize, setSelectedSize] = useState('M');
     
     // 2. State for the main image

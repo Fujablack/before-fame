@@ -4,6 +4,7 @@ import { useState } from "react";
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Span } from "next/dist/trace";
 
 const genders = [
@@ -48,6 +49,7 @@ const fujaImages = [
 ];
 
 export default function Home() {
+  const router = useRouter();
   // const [emblaRef] = useEmblaCarousel({ loop: true }, [
   //   Autoplay({ delay: 3000, stopOnInteraction: false })
   // ]);
@@ -84,14 +86,14 @@ export default function Home() {
 
             <div className="flex gap-6 sm:gap-12 pointer-events-auto">
               <button
-                onClick={() => { navigation.navigate('/shop') }}
+                onClick={() => { router.push('/shop') }}
                 className="uppercase text-white tracking-[0.8px] sm:tracking-[1.4px] text-[11px] sm:text-[14px] pb-1 border-b border-white hover:text-gray-300 hover:border-gray-300 transition-colors"
               >
                 Shop Women
               </button>
 
               <button
-                onClick={() => { navigation.navigate('/shop') }}
+                onClick={() => { router.push('/shop') }}
                 className="uppercase text-white tracking-[0.8px] sm:tracking-[1.4px] text-[11px] sm:text-[14px] pb-1 border-b border-white hover:text-gray-300 hover:border-gray-300 transition-colors"
               >
                 Shop Men
