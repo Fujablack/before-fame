@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const Footer = () => { // 👈 Changed to capital F
+const Footer = () => {
   return (
     <footer className="bg-black text-zinc-200  px-6 py-16 md:px-12 border-t border-zinc-800">
       <div className="max-w-[1920px] mx-auto flex flex-col md:flex-row justify-between items-start gap-12">

@@ -13,7 +13,7 @@ export default function AdminForm() {
     description: "",
     category: "T-Shirts",
     stock: "10",
-    sizes: "M, L, XL",
+    sizes: "S, M, L, XL, XXL",
   })
   
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
