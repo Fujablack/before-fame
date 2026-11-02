@@ -57,7 +57,7 @@ export default function About() {
                         <div className="flex justify-center w-full pt-12 border-t border-zinc-200">
                             <div className="flex flex-col gap-6 text-center max-w-3xl">
                                 <p className="text-[14px] tracking-[2px] text-black uppercase">
-                                    I’m Fuja. I call the way I think freestyle thinking or simply, a vibe.
+                                    I’m Fuja. I call the way I think freestyle thinking.
                                 </p>
                                 <p className="text-[14px] tracking-[2px] text-black uppercase">
                                     Anything goes. There’s no single right way to think, dress, create, or exist. If it feels right to you, explore it. If it looks different, let it. If it breaks the rules people made up for you, even better.

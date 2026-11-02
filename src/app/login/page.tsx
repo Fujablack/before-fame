@@ -48,7 +48,6 @@ export default function Login() {
             router.push("/");
             router.refresh(); // Refresh to update the Navbar
         }
-
         setIsSubmitting(false);
     };
 

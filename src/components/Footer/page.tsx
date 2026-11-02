@@ -2,27 +2,27 @@ import Link from "next/link";
 
 const Footer = () => { // 👈 Changed to capital F
   return (
-    <footer className="bg-black text-zinc-500  px-6 py-16 md:px-12 border-t border-zinc-800">
+    <footer className="bg-black text-zinc-200  px-6 py-16 md:px-12 border-t border-zinc-800">
       <div className="max-w-[1920px] mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
         <div className="flex flex-col gap-4">
           <span className="uppercase font-bold tracking-[2px] text-[14px]">
             before fame
           </span>
-          <p className="text-zinc-500  uppercase tracking-[2px] text-[8px] md:text-[16px] max-w-xs leading-relaxed">
-            Before the lights, we were silent. Considered cuts and modern silhouettes, tailored to perfection.
+          <p className="text-zinc-200  uppercase tracking-[2px] text-[8px] md:text-[16px] max-w-xs leading-relaxed">
+            Before the lights, we were silent.
           </p>
         </div>
 
         <div className="flex gap-16 md:gap-24">
           <div className="flex flex-col gap-4 text-sm uppercase tracking-[1.4px]">
-            <span className="text-zinc-500 mb-2 ">Explore</span>
+            <span className="text-zinc-200 mb-2 ">Explore</span>
             <Link href="/shop" className="hover:opacity-50 transition-opacity">Shop</Link>
             <Link href="/about" className="hover:opacity-50 transition-opacity">About</Link>
             <Link href="/contact" className="hover:opacity-50 transition-opacity">Contact Us</Link>
           </div>
 
           <div className="flex flex-col gap-4 text-sm uppercase tracking-[1.4px]">
-            <span className="text-zinc-500 mb-2 ">Socials</span>
+            <span className="text-zinc-200 mb-2 ">Socials</span>
 
             <a
               href="https://www.instagram.com/beforefamewear?xtok=dW0xMm84ZmN6enAx&utm_source=qr"
@@ -53,7 +53,7 @@ const Footer = () => { // 👈 Changed to capital F
         </div>
       </div>
 
-      <div className="max-w-[1920px] mx-auto mt-16 pt-8 border-t border-zinc-800 text-xs text-zinc-600 uppercase tracking-widest flex justify-between">
+      <div className="max-w-[1920px] mx-auto mt-16 pt-8 border-t border-zinc-800 text-xs text-zinc-200 uppercase tracking-widest flex justify-between">
         <span>© {new Date().getFullYear()} Before Fame. All Rights Reserved.</span>
       </div>
     </footer>

@@ -125,11 +125,9 @@ function ShopDetails() {
                     <button className="w-full py-4 bg-black text-white uppercase tracking-[2px] text-[14px] hover:bg-zinc-800 transition-colors">
                         Add to Cart
                     </button>
-
-                    <div className="mt-8 text-[12px] uppercase tracking-[1px] text-zinc-400">
-                        <p>Free shipping on orders above ₦100,000</p>
-                    </div>
-
+                    <button className="w-full py-4 bg-black text-white uppercase tracking-[2px] text-[14px] hover:bg-zinc-800 transition-colors mt-5">
+                        Buy
+                    </button>
                 </div>
             </div>
         </div>

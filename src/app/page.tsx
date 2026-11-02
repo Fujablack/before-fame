@@ -232,14 +232,14 @@ const [products, setProducts] = useState<Product[]>([])
           </div>
         </section> */}
 
-        <section className="relative flex w-full h-[450px] sm:h-[600px] md:h-[800px] lg:h-305 bg-black">
+        <section className="relative flex w-full h-112.5 sm:h-150 md:h-200 lg:h-305 bg-black">
           <video
             autoPlay
             loop
             muted
             playsInline
             className="absolute inset-0 w-full h-full object-cover"
-            poster="/images/fuja.jpg"
+            // poster="/images/fuja.jpg"
           >
             <source src="https://media1.calvinklein.com/images/20260630/about_us_250/Videos/Reach.mp4" type="video/mp4" />
           </video>
@@ -258,8 +258,6 @@ const [products, setProducts] = useState<Product[]>([])
             </button>
           </div>
         </section>
-
-        {/* <Footer /> */}
 
       </main>
     </div>
