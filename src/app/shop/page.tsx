@@ -2,6 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation"
 
 // 1. Add all your products here
 const products = [
@@ -14,6 +15,7 @@ const products = [
 ];
 
 export default function Shop() {
+    const router = useRouter()
 
     return (
         <div className="min-h-screen bg-white text-black flex flex-col">

@@ -4,6 +4,19 @@ import { useState, useEffect } from "react";
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+  // 1. Add this type at the top of the file (outside the component)
+type Product = {
+  id: string;
+  name: string;
+  price: number;
+  images: string[];
+  description: string;
+  category: string;
+  sizes: string[];
+  stock: number;
+}
 
 const genders = [
   {
@@ -47,10 +60,14 @@ const fujaImages = [
 ];
 
 const Home = () => {
+
+
+// 2. Update your useState to use the type
+const [products, setProducts] = useState<Product[]>([])
   // const [emblaRef] = useEmblaCarousel({ loop: true }, [
   //   Autoplay({ delay: 3000, stopOnInteraction: false })
   // ]);
-  const [products, setProducts] = useState([]);
+  const router = useRouter()
 
   const fetchGenderPictures = async () => {
     try {
@@ -102,14 +119,14 @@ const Home = () => {
 
             <div className="flex gap-6 sm:gap-12 pointer-events-auto">
               <button
-                onClick={() => { navigation.navigate('/shop') }}
+                onClick={() => router.push('/shop')}
                 className="uppercase text-white tracking-[0.8px] sm:tracking-[1.4px] text-[11px] sm:text-[14px] pb-1 border-b border-white hover:text-gray-300 hover:border-gray-300 transition-colors"
               >
                 Shop Women
               </button>
 
               <button
-                onClick={() => { navigation.navigate('/shop') }}
+                onClick={() => router.push('/shop')}
                 className="uppercase text-white tracking-[0.8px] sm:tracking-[1.4px] text-[11px] sm:text-[14px] pb-1 border-b border-white hover:text-gray-300 hover:border-gray-300 transition-colors"
               >
                 Shop Men
