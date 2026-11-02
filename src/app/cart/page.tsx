@@ -25,7 +25,7 @@ export default function CartPage() {
         
         const popup = new PaystackPop();
         popup.resumeTransaction(data.access_code, {
-          onSuccess: (transaction) => {
+          onSuccess: (transaction: any) => {
             // Redirect to the success page we will build next
             window.location.href = `/payment/success?reference=${transaction.reference}`;
           },
