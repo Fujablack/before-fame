@@ -13,4 +13,24 @@ model User {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
+
+  // Optional: If you want to track who added the product
+  products Product[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  price       Int // Store in Kobo/Cents (e.g., 1500000 = ₦15,000)
+  images      String[] // Array of image URLs
+  category    String // e.g., "Shirts", "Hoodies"
+  sizes       String[] // e.g., ["S", "M", "L"]
+  stock       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Optional: Link to the user who created it
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
 }

@@ -1,10 +1,9 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import Link from "next/link";
-import { Span } from "next/dist/trace";
 
 const genders = [
   {
@@ -19,26 +18,26 @@ const genders = [
   },
 ];
 
-const products = [
-  {
-    id: 1,
-    name: "Leather overcoat",
-    price: "$99.00",
-    image: "/images/1.jpg",
-  },
-  {
-    id: 2,
-    name: "Oversized t-shirt",
-    price: "$22.00",
-    image: "/images/4.jpg",
-  },
-  {
-    id: 3,
-    name: "The hundred hoody",
-    price: "$22.00",
-    image: "/images/2.jpg",
-  },
-];
+// const products = [
+//   {
+//     id: 1,
+//     name: "Leather overcoat",
+//     price: "$99.00",
+//     image: "/images/1.jpg",
+//   },
+//   {
+//     id: 2,
+//     name: "Oversized t-shirt",
+//     price: "$22.00",
+//     image: "/images/4.jpg",
+//   },
+//   {
+//     id: 3,
+//     name: "The hundred hoody",
+//     price: "$22.00",
+//     image: "/images/2.jpg",
+//   },
+// ];
 
 const fujaImages = [
   "/images/fuja.jpg",
@@ -47,10 +46,29 @@ const fujaImages = [
   // "/images/fuja-4.jpg",
 ];
 
-export default function Home() {
+const Home = () => {
   // const [emblaRef] = useEmblaCarousel({ loop: true }, [
   //   Autoplay({ delay: 3000, stopOnInteraction: false })
   // ]);
+  const [products, setProducts] = useState([]);
+
+  const fetchGenderPictures = async () => {
+    try {
+      const response = await fetch('/api/products')
+      const data = await response.json();
+      if (response.ok) {
+        setProducts(data);
+        console.log("===========", data)
+      }
+    } catch (error) {
+      console.log(error, 'Failed to fetch pictures')
+    }
+  }
+
+  useEffect(() => {
+    fetchGenderPictures()
+  }, []);
+
 
   return (
     <div className="max-w-[1920px] mx-auto">
@@ -130,16 +148,20 @@ export default function Home() {
             {/* Product Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
               {products.map((product) => (
-                <div key={product.id} className="group cursor-pointer">
-                  {/* Image Container */}
+                // Wrap in Link to go to details page
+                <Link href={`/shopDetails/${product.id}`} key={product.id} className="group cursor-pointer">
+
+                  {/* Image Container - Only show the FIRST image */}
                   <div className="relative w-full aspect-[3/4] mb-4 overflow-hidden bg-zinc-100">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
+                    {product.images?.[0] && (
+                      <Image
+                        src={product.images[0]}
+                        alt={product.name}
+                        fill
+                        className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+                    )}
                   </div>
 
                   {/* Product Details */}
@@ -148,10 +170,11 @@ export default function Home() {
                       {product.name}
                     </span>
                     <span className="text-[14px] sm:text-[16px] font-bold text-[#111]">
-                      {product.price}
+                      ₦{(product.price / 100).toLocaleString()}
                     </span>
                   </div>
-                </div>
+
+                </Link>
               ))}
             </div>
 
@@ -225,3 +248,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default Home;
