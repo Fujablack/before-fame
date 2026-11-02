@@ -41,7 +41,7 @@ function ShopDetails() {
 
                 const popup = new PaystackPop();
                 popup.resumeTransaction(data.access_code, {
-                    onSuccess: (transaction) => {
+                    onSuccess: (transaction: any) => {
                         alert(`Payment successful! Reference: ${transaction.reference}`);
                     },
                     onCancel: () => alert("Payment window closed."),
