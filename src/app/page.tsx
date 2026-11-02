@@ -6,7 +6,7 @@ import Autoplay from 'embla-carousel-autoplay';
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-  // 1. Add this type at the top of the file (outside the component)
+// 1. Add this type at the top of the file (outside the component)
 type Product = {
   id: string;
   name: string;
@@ -62,8 +62,8 @@ const fujaImages = [
 const Home = () => {
 
 
-// 2. Update your useState to use the type
-const [products, setProducts] = useState<Product[]>([])
+  // 2. Update your useState to use the type
+  const [products, setProducts] = useState<Product[]>([])
   // const [emblaRef] = useEmblaCarousel({ loop: true }, [
   //   Autoplay({ delay: 3000, stopOnInteraction: false })
   // ]);
@@ -90,7 +90,7 @@ const [products, setProducts] = useState<Product[]>([])
   return (
     <div className="max-w-[1920px] mx-auto">
       <main>
-        <section className="relative bg-[url(/images/bg2.jpg)] bg-cover bg-center bg-no-repeat w-full min-h-137.5 h-[75vh] max-h-200.5">
+        {/* <section className="relative bg-[url(/images/bg2.jpg)] bg-cover bg-center bg-no-repeat w-full min-h-137.5 h-[75vh] max-h-200.5">
           <div className="absolute inset-x-0 bottom-[12%] sm:bottom-[14%] flex flex-col items-center sm:items-start px-5 sm:px-8 md:pl-16 lg:pl-[11.25%]">
             <span className="text-[clamp(42px,9vw,122px)] leading-[0.95] font-hero text-white uppercase max-w-full sm:max-w-163.5 text-center sm:text-left">
               before fame.
@@ -102,6 +102,40 @@ const [products, setProducts] = useState<Product[]>([])
                 <Link href={'/shop'}>shop</Link>
               </span>
             </button>
+          </div>
+        </section> */}
+
+        <section className="relative w-full h-[85vh] sm:h-[75vh] max-h-[800px] overflow-hidden">
+          {/* 1. The Video Background */}
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+          // poster="/images/fuja.jpg" // Add a fallback image here later if you want
+          >
+            <source src="https://media1.calvinklein.com/images/20261027/Top_Gifts/videos/TG_Abi.mp4" type="video/mp4" />
+          </video>
+
+          {/* 2. Dark Overlay (Crucial for text readability) */}
+          <div className="absolute inset-0 bg-black/30 sm:bg-gradient-to-r sm:from-black/60 sm:to-transparent"></div>
+
+          {/* 3. The Text Content */}
+          <div className="absolute inset-0 flex flex-col justify-end pb-[12%] sm:justify-center sm:pb-0 px-5 sm:px-8 md:pl-16 lg:pl-[11.25%] z-10">
+            <div className="flex flex-col items-start max-w-xl">
+              <span className="text-[clamp(42px,9vw,122px)] leading-[0.95] font-hero text-white uppercase text-left mb-6 drop-shadow-lg">
+                before fame.
+              </span>
+
+              <Link href={'/shop'} passHref>
+                <button className="group py-3 px-10 bg-white hover:bg-black flex justify-center items-center transition-colors w-fit">
+                  <span className="uppercase text-[12px] sm:text-[14px] text-[#111] group-hover:text-white tracking-[1.4px]">
+                    shop
+                  </span>
+                </button>
+              </Link>
+            </div>
           </div>
         </section>
 
@@ -239,7 +273,7 @@ const [products, setProducts] = useState<Product[]>([])
             muted
             playsInline
             className="absolute inset-0 w-full h-full object-cover"
-            // poster="/images/fuja.jpg"
+          // poster="/images/fuja.jpg"
           >
             <source src="https://media1.calvinklein.com/images/20260630/about_us_250/Videos/Reach.mp4" type="video/mp4" />
           </video>

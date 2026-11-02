@@ -21,11 +21,44 @@ function ShopDetails() {
     const [loading, setLoading] = useState(true);
     const [selectedSize, setSelectedSize] = useState('');
     const [activeImage, setActiveImage] = useState(0);
-    
+
+    const handlePayment = async () => {
+        const email = prompt("Please enter your email for the receipt:");
+        if (!email) return;
+
+        try {
+            const res = await fetch("/api/paystack/initialize", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, amount: cartTotal }),
+            });
+
+            const data = await res.json();
+
+            if (data.access_code) {
+                // ✅ Dynamically import Paystack only when the button is clicked
+                const { default: PaystackPop } = await import('@paystack/inline-js');
+
+                const popup = new PaystackPop();
+                popup.resumeTransaction(data.access_code, {
+                    onSuccess: (transaction) => {
+                        alert(`Payment successful! Reference: ${transaction.reference}`);
+                    },
+                    onCancel: () => alert("Payment window closed."),
+                });
+            } else {
+                alert(data.error || "Failed to start payment");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Something went wrong");
+        }
+    };
+
     // Cart state
     const { cart, addToCart, removeFromCart, updateQuantity, cartTotal } = useCart();
     const [open, setOpen] = useState(false);
-    
+
     // Size Guide state
     const [isGuideOpen, setIsGuideOpen] = useState(false);
 
@@ -103,8 +136,8 @@ function ShopDetails() {
                     <div className="mb-5">
                         <div className="flex justify-between items-center mb-2">
                             <span className="text-[12px] uppercase tracking-[2px] text-zinc-500 block">size: {selectedSize}</span>
-                            <button 
-                                onClick={() => setIsGuideOpen(true)} 
+                            <button
+                                onClick={() => setIsGuideOpen(true)}
                                 className="text-[12px] underline text-zinc-500 hover:text-black"
                             >
                                 Size Guide
@@ -127,7 +160,7 @@ function ShopDetails() {
                     </div>
 
                     {/* Add to Cart Button */}
-                    <button 
+                    <button
                         onClick={() => {
                             if (!selectedSize) return alert("Please select a size first!");
                             addToCart({
@@ -139,14 +172,34 @@ function ShopDetails() {
                                 quantity: 1
                             });
                             setOpen(true);
-                        }} 
+                        }}
                         className="w-full py-4 bg-black text-white uppercase tracking-[2px] text-[14px] hover:bg-zinc-800 transition-colors"
                     >
                         Add to Cart
                     </button>
-                    
-                    <button className="w-full py-4 bg-black text-white uppercase tracking-[2px] text-[14px] hover:bg-zinc-800 transition-colors mt-5">
-                        Buy
+
+                    <button
+                        onClick={() => {
+                            if (!selectedSize) return alert("Please select a size first!");
+
+                            // 1. Add the item to the cart
+                            addToCart({
+                                id: product.id,
+                                name: product.name,
+                                price: product.price,
+                                image: product.images[0],
+                                size: selectedSize,
+                                quantity: 1
+                            });
+
+                            // 2. Trigger payment (the cartTotal state will be stale here, so we pass the new total manually)
+                            // Since state updates are async, we can't rely on cartTotal immediately. 
+                            // A safer approach is to just open the cart drawer and let them click "Pay Now".
+                            setOpen(true);
+                        }}
+                        className="w-full py-4 bg-black text-white uppercase tracking-[2px] text-[14px] hover:bg-zinc-800 transition-colors mt-5"
+                    >
+                        Buy Now
                     </button>
                 </div>
             </div>
@@ -155,9 +208,11 @@ function ShopDetails() {
             <SizeGuide isOpen={isGuideOpen} onClose={() => setIsGuideOpen(false)} />
 
             {/* Cart Drawer */}
-            {open && (
-                <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setOpen(false)} />
-            )}
+            {
+                open && (
+                    <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setOpen(false)} />
+                )
+            }
 
             <div className={`fixed right-0 top-0 h-full w-full sm:w-[400px] bg-white z-50 transition-transform duration-300 flex flex-col ${open ? 'translate-x-0' : 'translate-x-full'}`}>
                 <div className="flex justify-between items-center p-6 border-b">
@@ -174,22 +229,22 @@ function ShopDetails() {
                                 <div className="relative w-20 h-24 bg-zinc-100 flex-shrink-0">
                                     <Image src={item.image} alt={item.name} fill className="object-cover" />
                                 </div>
-                                
+
                                 <div className="flex flex-col justify-between flex-1">
                                     <div>
                                         <h3 className="font-bold text-sm uppercase">{item.name}</h3>
                                         <p className="text-zinc-500 text-xs mb-2">Size: {item.size}</p>
-                                        
+
                                         {/* Quantity Buttons */}
                                         <div className="flex items-center gap-3">
-                                            <button 
+                                            <button
                                                 onClick={() => updateQuantity(item.id, item.size, -1)}
                                                 className="w-6 h-6 border flex items-center justify-center hover:bg-zinc-100"
                                             >
                                                 -
                                             </button>
                                             <span className="text-sm font-semibold">{item.quantity}</span>
-                                            <button 
+                                            <button
                                                 onClick={() => updateQuantity(item.id, item.size, 1)}
                                                 className="w-6 h-6 border flex items-center justify-center hover:bg-zinc-100"
                                             >
@@ -217,7 +272,7 @@ function ShopDetails() {
                             <span className="font-bold">₦{(cartTotal / 100).toLocaleString()}</span>
                         </div>
                         <button
-                            onClick={() => alert("Payment integration coming soon!")}
+                            onClick={handlePayment}
                             className="w-full bg-black text-white py-4 uppercase tracking-widest hover:bg-zinc-800 transition-colors"
                         >
                             Pay Now
@@ -225,7 +280,7 @@ function ShopDetails() {
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     );
 }
 

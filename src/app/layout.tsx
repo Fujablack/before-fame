@@ -3,6 +3,7 @@ import { bodoni, jost, msMadi } from './fonts'
 import './globals.css'
 import Navbar from '@/components/Navbar/page'
 import Footer from '@/components/Footer/page'
+import { BsTruck } from "react-icons/bs";
 import { CartProvider } from "@/context/CartContext"
 import Providers from '@/components/Providers'
 
@@ -31,11 +32,12 @@ export default function RootLayout({
       <body className="relative min-h-screen flex flex-col bg-white text-black">
 
         <Providers> {/* 👈 2. Wrap everything inside here */}
-          <div className="bg-black flex justify-center items-center py-2">
-            <span className="uppercase text-white text-[9px] sm:text-[10px] tracking-[1.5px] text-center">
-              free shipping for nigeria orders above $100
-            </span>
-          </div>
+          <div className="bg-black flex justify-center items-center py-2 gap-2">
+  <BsTruck className="text-white text-[12px] sm:text-[14px]" />
+  <span className="uppercase text-white text-[9px] sm:text-[10px] tracking-[1.5px] text-center mt-0.5">
+    free shipping for orders above $100 
+  </span>
+</div>
 
           <CartProvider>
             <Navbar />

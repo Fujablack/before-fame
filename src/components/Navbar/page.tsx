@@ -1,20 +1,25 @@
-"use client"; // 👈 1. Required for useState and onClick
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
-
 import { useSession, signOut } from "next-auth/react"
 import { useState } from "react";
+// 1. Import your cart hook and an icon (using react-icons here)
+import { useCart } from "@/context/CartContext";
+import { FaShoppingCart } from "react-icons/fa"; 
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { data: session, status } = useSession()
+  
+  // 2. Get the cart from context and calculate total items
+  const { cart } = useCart();
+  const totalItems = cart.length; 
 
   const handleSignOut = () => {
     signOut();
     setMenuOpen(false);
   }
-
 
   return (
     <header className="w-full bg-transparent text-black px-4 py-4 sm:px-6 sm:py-5 md:px-12 md:py-6 relative z-50">
@@ -37,12 +42,26 @@ const Navbar = () => {
           <Link href="/contact" className="cursor-pointer hover:opacity-50 transition-opacity">contact us</Link>
         </div>
 
-        <div className="flex items-center gap-4">
-          {status === "unauthenticated" ? <Link href="/login" className=" md:block uppercase tracking-[1.4px] text-[14px] cursor-pointer hover:opacity-50 transition-opacity">
-            log in
-          </Link> :
-            <p className=" md:block tracking-[1.4px] text-[14px] cursor-pointer hover:opacity-50 transition-opacity">Hey, {session?.user?.name || "User"}!</p>
-          }
+        <div className="flex items-center gap-5">
+          {status === "unauthenticated" ? (
+            <Link href="/login" className="md:block uppercase tracking-[1.4px] text-[14px] cursor-pointer hover:opacity-50 transition-opacity">
+              log in
+            </Link>
+          ) : (
+            <p className="md:block tracking-[1.4px] text-[14px] cursor-pointer hover:opacity-50 transition-opacity">
+              Hey, {session?.user?.name || "User"}!
+            </p>
+          )}
+
+          {/* 3. The Cart Icon with the Badge */}
+          <Link href="/cart" className="relative cursor-pointer hover:opacity-50 transition-opacity flex items-center">
+            <FaShoppingCart className="text-xl md:text-2xl" />
+            {totalItems > 0 && (
+              <span className="absolute -top-2 -right-2 bg-black text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                {totalItems}
+              </span>
+            )}
+          </Link>
 
           <button
             type="button"
@@ -62,7 +81,11 @@ const Navbar = () => {
           <Link href="/shop" className="cursor-pointer hover:opacity-50" onClick={() => setMenuOpen(false)}>shop</Link>
           <Link href="/about" className="cursor-pointer hover:opacity-50" onClick={() => setMenuOpen(false)}>about</Link>
           <Link href="/contact" className="cursor-pointer hover:opacity-50" onClick={() => setMenuOpen(false)}>contact us</Link>
-          {status === 'unauthenticated' ? <Link href="/login" className="cursor-pointer hover:opacity-50" onClick={() => setMenuOpen(false)}>log in</Link> : <Link href="" className="cursor-pointer hover:opacity-50" onClick={handleSignOut}>Sign out</Link>}
+          {status === 'unauthenticated' ? (
+            <Link href="/login" className="cursor-pointer hover:opacity-50" onClick={() => setMenuOpen(false)}>log in</Link>
+          ) : (
+            <Link href="" className="cursor-pointer hover:opacity-50" onClick={handleSignOut}>Sign out</Link>
+          )}
         </div>
       )}
     </header>

@@ -8,8 +8,10 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     })
     return NextResponse.json(products)
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch" }, { status: 500 })
+  } catch (error: any) {
+    // 👇 Add this to see the real error in the terminal and browser
+    console.error("GET PRODUCTS ERROR:", error)
+    return NextResponse.json({ error: error.message || "Failed to fetch" }, { status: 500 })
   }
 }
 
@@ -17,7 +19,7 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    
+
     // Basic validation
     if (!body.name || !body.price || !body.images || body.images.length === 0) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
