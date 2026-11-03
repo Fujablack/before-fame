@@ -44,7 +44,7 @@ const Navbar = () => {
 
         <div className="flex items-center gap-5">
           {status === "unauthenticated" ? (
-            <Link href="/login" className="md:block uppercase tracking-[1.4px] text-[14px] cursor-pointer hover:opacity-50 transition-opacity">
+            <Link href="/login" className="md:block uppercase tracking-[1.4px] text-[12px] md:text-[14px] cursor-pointer hover:opacity-50 transition-opacity">
               log in
             </Link>
           ) : (

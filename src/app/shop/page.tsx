@@ -11,33 +11,32 @@ type Product = {
 };
 
 export default function Shop() {
-    // 1. Set up state for products and loading
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
 
     // 2. Fetch the products from your database API
     useEffect(() => {
-    const fetchProducts = async () => {
-        try {
-            const res = await fetch('/api/products');
-            const data = await res.json();
-            
-            // Check if data is actually an array before setting it
-            if (Array.isArray(data)) {
-                setProducts(data);
-            } else {
-                console.error("API did not return an array:", data);
-                setProducts([]); // Set to empty array to prevent crash
+        const fetchProducts = async () => {
+            try {
+                const res = await fetch('/api/products');
+                const data = await res.json();
+
+                // Check if data is actually an array before setting it
+                if (Array.isArray(data)) {
+                    setProducts(data);
+                } else {
+                    console.error("API did not return an array:", data);
+                    setProducts([]);
+                }
+            } catch (error) {
+                console.error("Failed to fetch products", error);
+                setProducts([]);
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-            console.error("Failed to fetch products", error);
-            setProducts([]);
-        } finally {
-            setLoading(false);
-        }
-    };
-    fetchProducts();
-}, []);
+        };
+        fetchProducts();
+    }, []);
 
     if (loading) {
         return (
@@ -49,8 +48,8 @@ export default function Shop() {
 
     return (
         <div className="min-h-screen bg-white text-black flex flex-col">
-            <main className="flex-1 max-w-[1920px] mx-auto w-full px-4 sm:px-6 md:px-12 py-12 md:py-20">
-                <div className="flex justify-between items-end mb-5">
+            <main className="flex-1 max-w-[1920px] mx-auto w-full px-4 sm:px-6 md:px-12 md:py-20">
+                <div className="flex justify-between items-end mb-2">
                     <h1 className="text-[14px] md:text-[48px] uppercase tracking-widest text-black">
                         All Pieces
                     </h1>
@@ -64,13 +63,12 @@ export default function Shop() {
                         </span>
                     )}
                 </div>
-                
-                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-5">
+
+                {/* <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-5">
                     {products.map((product) => (
                         <Link href={`/shopDetails/${product.id}`} key={product.id} className="group cursor-pointer flex flex-col">
                             
                             <div className="relative w-full aspect-[3/4] bg-zinc-100 overflow-hidden mb-4">
-                                {/* 3. Render the first image from the database array */}
                                 {product.images?.[0] && (
                                     <Image
                                         src={product.images[0]}
@@ -83,15 +81,45 @@ export default function Shop() {
                             </div>
                             
                             <div className="flex justify-between items-start">
-                                <span className="uppercase tracking-[2px] text-[8px] md:text-[16px] text-black">
+                                <span className="uppercase tracking-[1px] text-[10px] sm:text-[16px] text-[#111]">
                                     {product.name}
                                 </span>
-                                {/* 4. Format the price from Kobo to Naira */}
                                 <span className="text-[8px] md:text-[16px] text-black font-bold">
                                     ₦{(product.price / 100).toLocaleString()}
                                 </span>
                             </div>
                             
+                        </Link>
+                    ))}
+                </div> */}
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1 md:gap-12">
+                    {products.map((product) => (
+                        // Wrap in Link to go to details page
+                        <Link href={`/shopDetails/${product.id}`} key={product.id} className="group cursor-pointer mb-4">
+
+                            {/* Image Container - Only show the FIRST image */}
+                            <div className="relative w-full aspect-3/4 mb-1 overflow-hidden bg-zinc-100">
+                                {product.images?.[0] && (
+                                    <Image
+                                        src={product.images[0]}
+                                        alt={product.name}
+                                        fill
+                                        className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                    />
+                                )}
+                            </div>
+
+                            {/* Product Details */}
+                            <div className="flex flex-col justify-between items-start mt-1">
+                                <span className="uppercase tracking-[1px] text-[10px] sm:text-[16px] text-[#111]">
+                                    {product.name}
+                                </span>
+                                <span className="text-[12px] sm:text-[16px] font-normal text-[#000]">
+                                    ₦{(product.price / 100).toLocaleString()}
+                                </span>
+                            </div>
+
                         </Link>
                     ))}
                 </div>

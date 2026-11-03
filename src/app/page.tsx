@@ -184,11 +184,11 @@ const Home = () => {
 
         {/* NEW PRODUCT GRID SECTION */}
         <section className="w-full bg-white px-5 sm:px-8 md:px-16 py-16 md:py-24">
-          <div className="max-w-[1920px] mx-auto">
+          <div >
 
             {/* Section Header */}
-            <div className="flex justify-between items-center mb-10 md:mb-16">
-              <h3 className="text-[#111] uppercase tracking-[3px] sm:tracking-[3.84px] text-[14px] sm:text-24px]">
+            <div className="flex justify-between items-center mb-5 md:mb-16">
+              <h3 className="text-black uppercase tracking-[3px] sm:tracking-[3.84px] text-[14px] sm:text-24px]">
                 New Arrivals
               </h3>
               <Link href="/shop" className="text-[#111] text-[12px] sm:text-[14px] uppercase tracking-[1.4px] hover:underline ">
@@ -197,13 +197,13 @@ const Home = () => {
             </div>
 
             {/* Product Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
-              {products.map((product) => (
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1 md:gap-12">
+              {products.slice(0, 4).map((product) => (
                 // Wrap in Link to go to details page
-                <Link href={`/shopDetails/${product.id}`} key={product.id} className="group cursor-pointer">
+                <Link href={`/shopDetails/${product.id}`} key={product.id} className="group cursor-pointer mb-4">
 
                   {/* Image Container - Only show the FIRST image */}
-                  <div className="relative w-full aspect-[3/4] mb-4 overflow-hidden bg-zinc-100">
+                  <div className="relative w-full aspect-3/4 mb-1 overflow-hidden bg-zinc-100">
                     {product.images?.[0] && (
                       <Image
                         src={product.images[0]}
@@ -216,11 +216,11 @@ const Home = () => {
                   </div>
 
                   {/* Product Details */}
-                  <div className="flex justify-between items-start mt-2">
-                    <span className="uppercase tracking-[1px] text-[14px] sm:text-[16px] text-[#111]">
+                  <div className="flex flex-col justify-between items-start mt-1">
+                    <span className="uppercase tracking-[1px] text-[10px] sm:text-[16px] text-[#111]">
                       {product.name}
                     </span>
-                    <span className="text-[14px] sm:text-[16px] font-bold text-[#111]">
+                    <span className="text-[12px] sm:text-[16px] font-normal text-[#000]">
                       ₦{(product.price / 100).toLocaleString()}
                     </span>
                   </div>

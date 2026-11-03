@@ -3,6 +3,7 @@ import { useParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { BsTrash } from "react-icons/bs";
 import { useCart } from "@/context/CartContext"
 import SizeGuide from '@/components/SizeGuard.tsx/page';
 
@@ -31,6 +32,7 @@ function ShopDetails() {
 
     // NEW: Email Modal state
     const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+    const [isSizeSelected, setIsSizeSelected] = useState(false);
     const [email, setEmail] = useState("");
 
     const proceedToPayment = async (e: React.FormEvent) => {
@@ -167,7 +169,7 @@ function ShopDetails() {
                     {/* Add to Cart Button */}
                     <button
                         onClick={() => {
-                            if (!selectedSize) return alert("Please select a size first!");
+                            if (!selectedSize) return setIsSizeSelected(true);
                             addToCart({
                                 id: product.id,
                                 name: product.name,
@@ -186,7 +188,7 @@ function ShopDetails() {
                     {/* Buy Now Button */}
                     <button
                         onClick={() => {
-                            if (!selectedSize) return alert("Please select a size first!");
+                            if (!selectedSize) return setIsSizeSelected(true);
                             addToCart({
                                 id: product.id,
                                 name: product.name,
@@ -253,9 +255,9 @@ function ShopDetails() {
 
                                     <div className="flex justify-between items-center mt-2">
                                         <p className="font-semibold text-sm">₦{((item.price * item.quantity) / 100).toLocaleString()}</p>
-                                        <button onClick={() => removeFromCart(item.id, item.size)} className="text-red-500 text-xs hover:underline">
-                                            Remove
-                                        </button>
+                                        {/* <button  className="text-red-500 text-xs hover:underline"> */}
+                                            <BsTrash className="text-red-500 hover:text-red-700 cursor-pointer" onClick={() => removeFromCart(item.id, item.size)} />
+                                        {/* </button> */}
                                     </div>
                                 </div>
                             </div>
@@ -312,6 +314,14 @@ function ShopDetails() {
                 </div>
             )}
 
+            {/* Size Selection Alert */}
+            {isSizeSelected &&
+                <div  onClick={() => setIsSizeSelected(false) } className='fixed inset-0 z-60 flex items-center justify-center bg-black/60 px-4'>
+                    <div className='bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full m-5 max-w-md relative text-center'>
+                        <p>Please select a size</p>
+                    </div>
+                </div>
+            }
         </div >
     );
 }
