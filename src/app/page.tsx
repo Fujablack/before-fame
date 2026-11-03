@@ -1,10 +1,7 @@
 "use client";
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import useEmblaCarousel from 'embla-carousel-react';
-import Autoplay from 'embla-carousel-autoplay';
+import { useState, useEffect, useRef } from "react"; // Added useRef
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 // 1. Add this type at the top of the file (outside the component)
 type Product = {
@@ -31,43 +28,12 @@ const genders = [
   },
 ];
 
-// const products = [
-//   {
-//     id: 1,
-//     name: "Leather overcoat",
-//     price: "$99.00",
-//     image: "/images/1.jpg",
-//   },
-//   {
-//     id: 2,
-//     name: "Oversized t-shirt",
-//     price: "$22.00",
-//     image: "/images/4.jpg",
-//   },
-//   {
-//     id: 3,
-//     name: "The hundred hoody",
-//     price: "$22.00",
-//     image: "/images/2.jpg",
-//   },
-// ];
-
-const fujaImages = [
-  "/images/fuja.jpg",
-  "/images/042.webp",
-  "/images/men16.jpg",
-  // "/images/fuja-4.jpg",
-];
-
 const Home = () => {
-
-
-  // 2. Update your useState to use the type
   const [products, setProducts] = useState<Product[]>([])
-  // const [emblaRef] = useEmblaCarousel({ loop: true }, [
-  //   Autoplay({ delay: 3000, stopOnInteraction: false })
-  // ]);
-  const router = useRouter()
+  
+  // Refs for the videos
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
+  const coreVideoRef = useRef<HTMLVideoElement>(null);
 
   const fetchGenderPictures = async () => {
     try {
@@ -75,7 +41,6 @@ const Home = () => {
       const data = await response.json();
       if (response.ok) {
         setProducts(data);
-        console.log("===========", data)
       }
     } catch (error) {
       console.log(error, 'Failed to fetch pictures')
@@ -84,41 +49,36 @@ const Home = () => {
 
   useEffect(() => {
     fetchGenderPictures()
+
+    // Force videos to play on mount (fixes React muted bug)
+    if (heroVideoRef.current) {
+      heroVideoRef.current.muted = true;
+      heroVideoRef.current.play().catch(e => console.log("Hero video blocked:", e));
+    }
+    if (coreVideoRef.current) {
+      coreVideoRef.current.muted = true;
+      coreVideoRef.current.play().catch(e => console.log("Core video blocked:", e));
+    }
   }, []);
 
 
   return (
     <div className="max-w-[1920px] mx-auto">
       <main>
-        {/* <section className="relative bg-[url(/images/bg2.jpg)] bg-cover bg-center bg-no-repeat w-full min-h-137.5 h-[75vh] max-h-200.5">
-          <div className="absolute inset-x-0 bottom-[12%] sm:bottom-[14%] flex flex-col items-center sm:items-start px-5 sm:px-8 md:pl-16 lg:pl-[11.25%]">
-            <span className="text-[clamp(42px,9vw,122px)] leading-[0.95] font-hero text-white uppercase max-w-full sm:max-w-163.5 text-center sm:text-left">
-              before fame.
-            </span>
-            <button
-              className="group mt-5 sm:mt-6 py-2.5 px-8 sm:px-12.5 bg-white hover:bg-black flex justify-center items-center transition-colors w-fit max-w-60.75"
-            >
-              <span className="uppercase text-[12px] sm:text-[14px] text-[#111] group-hover:text-white tracking-[1.4px]">
-                <Link href={'/shop'}>shop</Link>
-              </span>
-            </button>
-          </div>
-        </section> */}
-
         <section className="relative w-full h-[85vh] sm:h-[75vh] max-h-[800px] overflow-hidden">
-          {/* 1. The Video Background */}
+          {/* 1. The Video Background with Ref */}
           <video
+            ref={heroVideoRef}
             autoPlay
             loop
             muted
             playsInline
             className="absolute inset-0 w-full h-full object-cover"
-          // poster="/images/fuja.jpg" // Add a fallback image here later if you want
           >
             <source src="https://media1.calvinklein.com/images/20261027/Top_Gifts/videos/TG_Abi.mp4" type="video/mp4" />
           </video>
 
-          {/* 2. Dark Overlay (Crucial for text readability) */}
+          {/* 2. Dark Overlay */}
           <div className="absolute inset-0 bg-black/30 sm:bg-gradient-to-r sm:from-black/60 sm:to-transparent"></div>
 
           {/* 3. The Text Content */}
@@ -128,7 +88,7 @@ const Home = () => {
                 before fame.
               </span>
 
-              <Link href={'/shop'} passHref>
+              <Link href={'/shop'}>
                 <button className="group py-3 px-10 bg-white hover:bg-black flex justify-center items-center transition-colors w-fit">
                   <span className="uppercase text-[12px] sm:text-[14px] text-[#111] group-hover:text-white tracking-[1.4px]">
                     shop
@@ -152,19 +112,20 @@ const Home = () => {
             </span>
 
             <div className="flex gap-6 sm:gap-12 pointer-events-auto">
-              <button
-                onClick={() => router.push('/shop')}
+              {/* Changed to Link for better SEO and speed */}
+              <Link
+                href="/shop"
                 className="uppercase text-white tracking-[0.8px] sm:tracking-[1.4px] text-[11px] sm:text-[14px] pb-1 border-b border-white hover:text-gray-300 hover:border-gray-300 transition-colors"
               >
                 Shop Women
-              </button>
+              </Link>
 
-              <button
-                onClick={() => router.push('/shop')}
+              <Link
+                href="/shop"
                 className="uppercase text-white tracking-[0.8px] sm:tracking-[1.4px] text-[11px] sm:text-[14px] pb-1 border-b border-white hover:text-gray-300 hover:border-gray-300 transition-colors"
               >
                 Shop Men
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -185,7 +146,6 @@ const Home = () => {
         {/* NEW PRODUCT GRID SECTION */}
         <section className="w-full bg-white px-5 sm:px-8 md:px-16 py-16 md:py-24">
           <div >
-
             {/* Section Header */}
             <div className="flex justify-between items-center mb-5 md:mb-16">
               <h3 className="text-black uppercase tracking-[3px] sm:tracking-[3.84px] text-[14px] sm:text-24px]">
@@ -199,11 +159,8 @@ const Home = () => {
             {/* Product Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1 md:gap-12">
               {products.slice(0, 4).map((product) => (
-                // Wrap in Link to go to details page
                 <Link href={`/shopDetails/${product.id}`} key={product.id} className="group cursor-pointer mb-4">
-
-                  {/* Image Container - Only show the FIRST image */}
-                  <div className="relative w-full aspect-3/4 mb-1 overflow-hidden bg-zinc-100">
+                  <div className="relative w-full aspect-[3/4] mb-1 overflow-hidden bg-zinc-100">
                     {product.images?.[0] && (
                       <Image
                         src={product.images[0]}
@@ -215,7 +172,6 @@ const Home = () => {
                     )}
                   </div>
 
-                  {/* Product Details */}
                   <div className="flex flex-col justify-between items-start mt-1">
                     <span className="uppercase tracking-[1px] text-[10px] sm:text-[16px] text-[#111]">
                       {product.name}
@@ -224,56 +180,21 @@ const Home = () => {
                       ₦{(product.price / 100).toLocaleString()}
                     </span>
                   </div>
-
                 </Link>
               ))}
             </div>
-
           </div>
         </section>
 
-        {/* <section className="relative flex w-full h-[450px] sm:h-[600px] md:h-[800px] lg:h-305 bg-black">
-
-          <div className="absolute inset-0 overflow-hidden w-full h-full" ref={emblaRef}>
-            <div className="flex h-full">
-              {fujaImages.map((src, index) => (
-                <div key={index} className="relative flex-[0_0_100%] h-full">
-                  <Image
-                    src={src}
-                    alt={`Fuja ${index + 1}`}
-                    fill
-                    className="object-cover object-center grayscale hover:grayscale-0 transition-all duration-700"
-                    priority={index === 0}
-                    sizes="100vw"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="absolute inset-0 flex flex-col items-center justify-center z-10 px-4 pointer-events-none">
-            <h2 className="uppercase text-white text-[64px] sm:text-[80px] md:text-[100px] font-hero tracking-[3px] sm:tracking-[5px] mb-5 sm:mb-8 drop-shadow-lg">
-              UNLEARNED
-            </h2>
-            <button
-              onClick={() => { }}
-              className="pointer-events-auto group py-3 px-8 sm:px-10 bg-white hover:bg-black flex justify-center items-center transition-colors"
-            >
-              <span className="uppercase text-[12px] sm:text-[14px] text-[#111] group-hover:text-white tracking-[1.4px]">
-                Shop Now
-              </span>
-            </button>
-          </div>
-        </section> */}
-
         <section className="relative flex w-full h-112.5 sm:h-150 md:h-200 lg:h-305 bg-black">
+          {/* Second Video with Ref */}
           <video
+            ref={coreVideoRef}
             autoPlay
             loop
             muted
             playsInline
             className="absolute inset-0 w-full h-full object-cover"
-          // poster="/images/fuja.jpg"
           >
             <source src="https://media1.calvinklein.com/images/20260630/about_us_250/Videos/Reach.mp4" type="video/mp4" />
           </video>
@@ -282,14 +203,14 @@ const Home = () => {
             <h2 className="uppercase text-white text-[64px] sm:text-[80px] md:text-[100px] font-hero tracking-[3px] sm:tracking-[5px] mb-5 sm:mb-8 drop-shadow-lg">
               core
             </h2>
-            <button
-              onClick={() => { }}
+            <Link
+              href="/shop"
               className="pointer-events-auto group py-3 px-8 sm:px-10 bg-white hover:bg-black flex justify-center items-center transition-colors"
             >
               <span className="uppercase text-[12px] sm:text-[14px] text-[#111] group-hover:text-white tracking-[1.4px]">
                 Shop Now
               </span>
-            </button>
+            </Link>
           </div>
         </section>
 
