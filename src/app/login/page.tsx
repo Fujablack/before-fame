@@ -111,9 +111,9 @@ export default function Login() {
                                 <label htmlFor="password" className="text-[11px] uppercase tracking-[2px] text-zinc-500">
                                     Password
                                 </label>
-                                <Link href="/forgot-password" className="text-[11px] uppercase tracking-[1px] text-zinc-500 hover:text-black transition-colors">
+                                {/* <Link href="/forgot-password" className="text-[11px] uppercase tracking-[1px] text-zinc-500 hover:text-black transition-colors">
                                     Forgot?
-                                </Link>
+                                </Link> */}
                             </div>
                             <input
                                 type="password"
