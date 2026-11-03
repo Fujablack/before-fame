@@ -22,27 +22,39 @@ function ShopDetails() {
     const [selectedSize, setSelectedSize] = useState('');
     const [activeImage, setActiveImage] = useState(0);
 
-    const handlePayment = async () => {
-        const email = prompt("Please enter your email for the receipt:");
+    // Cart state
+    const { cart, addToCart, removeFromCart, updateQuantity, cartTotal } = useCart();
+    const [open, setOpen] = useState(false);
+
+    // Size Guide state
+    const [isGuideOpen, setIsGuideOpen] = useState(false);
+
+    // NEW: Email Modal state
+    const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+    const [email, setEmail] = useState("");
+
+    const proceedToPayment = async (e: React.FormEvent) => {
+        e.preventDefault();
         if (!email) return;
+
+        setIsEmailModalOpen(false);
 
         try {
             const res = await fetch("/api/paystack/initialize", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, amount: cartTotal }),
+                body: JSON.stringify({ email, amount: Math.round(cartTotal) }),
             });
 
             const data = await res.json();
 
             if (data.access_code) {
-                // ✅ Dynamically import Paystack only when the button is clicked
                 const { default: PaystackPop } = await import('@paystack/inline-js');
 
                 const popup = new PaystackPop();
                 popup.resumeTransaction(data.access_code, {
                     onSuccess: (transaction: any) => {
-                        alert(`Payment successful! Reference: ${transaction.reference}`);
+                        window.location.href = `/payment/success?reference=${transaction.reference}`;
                     },
                     onCancel: () => alert("Payment window closed."),
                 });
@@ -54,13 +66,6 @@ function ShopDetails() {
             alert("Something went wrong");
         }
     };
-
-    // Cart state
-    const { cart, addToCart, removeFromCart, updateQuantity, cartTotal } = useCart();
-    const [open, setOpen] = useState(false);
-
-    // Size Guide state
-    const [isGuideOpen, setIsGuideOpen] = useState(false);
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -178,11 +183,10 @@ function ShopDetails() {
                         Add to Cart
                     </button>
 
+                    {/* Buy Now Button */}
                     <button
                         onClick={() => {
                             if (!selectedSize) return alert("Please select a size first!");
-
-                            // 1. Add the item to the cart
                             addToCart({
                                 id: product.id,
                                 name: product.name,
@@ -191,11 +195,7 @@ function ShopDetails() {
                                 size: selectedSize,
                                 quantity: 1
                             });
-
-                            // 2. Trigger payment (the cartTotal state will be stale here, so we pass the new total manually)
-                            // Since state updates are async, we can't rely on cartTotal immediately. 
-                            // A safer approach is to just open the cart drawer and let them click "Pay Now".
-                            setOpen(true);
+                            setOpen(true); // Just open the drawer so they can click "Pay Now"
                         }}
                         className="w-full py-4 bg-black text-white uppercase tracking-[2px] text-[14px] hover:bg-zinc-800 transition-colors mt-5"
                     >
@@ -208,11 +208,9 @@ function ShopDetails() {
             <SizeGuide isOpen={isGuideOpen} onClose={() => setIsGuideOpen(false)} />
 
             {/* Cart Drawer */}
-            {
-                open && (
-                    <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setOpen(false)} />
-                )
-            }
+            {open && (
+                <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setOpen(false)} />
+            )}
 
             <div className={`fixed right-0 top-0 h-full w-full sm:w-[400px] bg-white z-50 transition-transform duration-300 flex flex-col ${open ? 'translate-x-0' : 'translate-x-full'}`}>
                 <div className="flex justify-between items-center p-6 border-b">
@@ -272,7 +270,7 @@ function ShopDetails() {
                             <span className="font-bold">₦{(cartTotal / 100).toLocaleString()}</span>
                         </div>
                         <button
-                            onClick={handlePayment}
+                            onClick={() => setIsEmailModalOpen(true)} // Open the custom modal
                             className="w-full bg-black text-white py-4 uppercase tracking-widest hover:bg-zinc-800 transition-colors"
                         >
                             Pay Now
@@ -280,6 +278,40 @@ function ShopDetails() {
                     </div>
                 )}
             </div>
+
+            {/* NEW: Email Modal */}
+            {isEmailModalOpen && (
+                <div
+                    className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 px-4"
+                    onClick={() => setIsEmailModalOpen(false)}
+                >
+                    <div
+                        className="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-md relative"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <h2 className="text-xl font-bold uppercase tracking-widest mb-4">Checkout</h2>
+                        <p className="text-sm text-zinc-500 mb-6">Please enter your email address to receive your receipt.</p>
+
+                        <form onSubmit={proceedToPayment} className="flex flex-col gap-4">
+                            <input
+                                type="email"
+                                required
+                                placeholder="you@example.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="w-full border border-zinc-300 p-3 rounded focus:outline-none focus:border-black"
+                            />
+                            <button
+                                type="submit"
+                                className="w-full bg-black text-white py-3 uppercase tracking-widest hover:bg-zinc-800 transition-colors"
+                            >
+                                Proceed to Pay
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
+
         </div >
     );
 }

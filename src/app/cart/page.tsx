@@ -2,14 +2,21 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { useState } from "react"
 import { useCart } from "@/context/CartContext"
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, cartTotal } = useCart()
+  
+  // 1. State for the email modal
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [email, setEmail] = useState("")
 
-  const handlePayment = async () => {
-    const email = prompt("Please enter your email for the receipt:");
-    if (!email) return;
+  const proceedToPayment = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!email) return
+
+    setIsModalOpen(false) // Close the email modal
 
     try {
       const res = await fetch("/api/paystack/initialize", {
@@ -26,7 +33,6 @@ export default function CartPage() {
         const popup = new PaystackPop();
         popup.resumeTransaction(data.access_code, {
           onSuccess: (transaction: any) => {
-            // Redirect to the success page we will build next
             window.location.href = `/payment/success?reference=${transaction.reference}`;
           },
           onCancel: () => alert("Payment window closed."),
@@ -87,12 +93,45 @@ export default function CartPage() {
           <span className="font-bold text-xl">₦{(cartTotal / 100).toLocaleString()}</span>
         </div>
         <button
-          onClick={handlePayment}
+          onClick={() => setIsModalOpen(true)} // 2. Open modal instead of prompt
           className="w-full bg-black text-white py-4 uppercase tracking-widest hover:bg-zinc-800 transition-colors"
         >
           Pay Now
         </button>
       </div>
+
+      {/* 3. The Custom Email Modal */}
+      {isModalOpen && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
+          onClick={() => setIsModalOpen(false)} // Click outside to close
+        >
+          <div 
+            className="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-md relative"
+            onClick={(e) => e.stopPropagation()} // Prevent clicks inside from closing it
+          >
+            <h2 className="text-xl font-bold uppercase tracking-widest mb-4">Checkout</h2>
+            <p className="text-sm text-zinc-500 mb-6">Please enter your email address to receive your receipt.</p>
+            
+            <form onSubmit={proceedToPayment} className="flex flex-col gap-4">
+              <input
+                type="email"
+                required
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full border border-zinc-300 p-3 rounded focus:outline-none focus:border-black"
+              />
+              <button
+                type="submit"
+                className="w-full bg-black text-white py-3 uppercase tracking-widest hover:bg-zinc-800 transition-colors"
+              >
+                Proceed to Pay
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
