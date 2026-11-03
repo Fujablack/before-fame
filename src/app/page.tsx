@@ -35,7 +35,7 @@ const Home = () => {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const coreVideoRef = useRef<HTMLVideoElement>(null);
 
-  const fetchGenderPictures = async () => {
+  const fetchGenderPicture = async () => {
     try {
       const response = await fetch('/api/products')
       const data = await response.json();
@@ -48,7 +48,7 @@ const Home = () => {
   }
 
   useEffect(() => {
-    fetchGenderPictures()
+    fetchGenderPicture()
 
     // Force videos to play on mount (fixes React muted bug)
     if (heroVideoRef.current) {
