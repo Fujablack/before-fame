@@ -43,11 +43,7 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-5">
-          {status === "unauthenticated" ? (
-            <Link href="/login" className="md:block uppercase tracking-[1.4px] text-[12px] md:text-[14px] cursor-pointer hover:opacity-50 transition-opacity">
-              log in
-            </Link>
-          ) : (
+          {status === "unauthenticated" ? undefined: (
             <p className="md:block tracking-[1.4px] text-[14px] cursor-pointer hover:opacity-50 transition-opacity">
               Hey, {session?.user?.name || "User"}!
             </p>

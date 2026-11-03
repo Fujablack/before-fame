@@ -30,7 +30,7 @@ const genders = [
 
 const Home = () => {
   const [products, setProducts] = useState<Product[]>([])
-  
+
   // Refs for the videos
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const coreVideoRef = useRef<HTMLVideoElement>(null);
@@ -48,17 +48,25 @@ const Home = () => {
   }
 
   useEffect(() => {
-    fetchGenderPicture()
+    fetchGenderPicture();
 
-    // Force videos to play on mount (fixes React muted bug)
-    if (heroVideoRef.current) {
-      heroVideoRef.current.muted = true;
-      heroVideoRef.current.play().catch(e => console.log("Hero video blocked:", e));
-    }
-    if (coreVideoRef.current) {
-      coreVideoRef.current.muted = true;
-      coreVideoRef.current.play().catch(e => console.log("Core video blocked:", e));
-    }
+    const videos = [heroVideoRef.current, coreVideoRef.current];
+
+    const tryPlay = () => {
+      videos.forEach((v) => {
+        if (v) {
+          v.muted = true;
+          v.play().catch(() => { });
+        }
+      });
+    };
+
+    tryPlay();
+
+    const events = ["touchstart", "click", "scroll"];
+    events.forEach((e) => window.addEventListener(e, tryPlay, { once: true, passive: true }));
+
+    return () => events.forEach((e) => window.removeEventListener(e, tryPlay));
   }, []);
 
 
@@ -73,6 +81,7 @@ const Home = () => {
             loop
             muted
             playsInline
+            preload="auto"
             className="absolute inset-0 w-full h-full object-cover"
           >
             <source src="https://media1.calvinklein.com/images/20261027/Top_Gifts/videos/TG_Abi.mp4" type="video/mp4" />
